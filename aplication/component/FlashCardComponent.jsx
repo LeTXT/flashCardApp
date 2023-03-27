@@ -1,46 +1,88 @@
 import React, { useState } from "react";
-import { View, Text, Button, StyleSheet } from "react-native";
+import { View, Text, Button, StyleSheet, Animated } from "react-native";
 
 // array
 import { wordsOffline } from "../arrayOffline/wordsOffline";
 
 // function
-import { handleTouchStart, handleTouchEnd } from '../util/changeCard'
+import {
+  handleTouchStart,
+  handleTouchEnd,
+  handleTouchMove,
+  findCardLocation
+} from "../util/changeCard";
 
-export default function FlashCardComponent({ cardNumber, flashCardRef, setCardNumber, words }) {
+export default function FlashCardComponent({
+  cardNumber,
+  flashCardRef,
+  setCardNumber,
+  words,
+  setMoveCard,
+  moveCard
+}) {
 
-    const [state, setState] = useState()
+  const obj = {
+    left: moveCard,
+  };
 
-    return (
-
-        <View style={styles.flashCardComponent} ref={flashCardRef} onStartShouldSetResponder={(e) => handleTouchStart(e)} onResponderRelease={(e) => handleTouchEnd(e, setCardNumber)}>
-            <Text style={styles.text}>{words[cardNumber]?.english ?? wordsOffline[cardNumber].english}</Text>
-
-            <Button title="" onPress={() => setCardNumber
-            (prev => prev + 1)}></Button>
-            <Text>{state}</Text>
-        </View>
-
-    )
+  return (
+    <Animated.View
+      style={[styles.flashCardComponent, obj]}
+      ref={flashCardRef}
+      onStartShouldSetResponder={(e) => handleTouchStart(e)}
+      onResponderRelease={(e) => handleTouchEnd(e, setCardNumber, setMoveCard)}
+      onResponderMove={(e) => handleTouchMove(e, setMoveCard)}
+      
+    >
+      
+    </Animated.View>
+  );
 }
 
 const styles = StyleSheet.create({
-    flashCardComponent: {
-        width: '90%',
-        maxWidth: 250,
-        height: 250,
+  flashCardComponent: {
+    position: 'absolute',
+    width: "90%",
+    maxWidth: 250,
+    height: 283,
 
-        borderRadius: 20,
-        borderColor: '#B7B7B7',
-        borderStyle: 'solid',
-        borderWidth: 1,
+    borderRadius: 5,
+    borderColor: "#B7B7B7",
+    borderStyle: "solid",
+    borderWidth: 1,
 
-        justifyContent: 'center',
-        alignItems: 'center',
+    // justifyContent: "center",
+    // alignItems: "center",
 
-        margin: 'auto'
-    },
-    text: {
-        fontSize: 31.43,
-    }
+  },
+  text: {
+    fontSize: 31.43,
+    position: "absolute",
+    backfaceVisibility: 'hidden',
+    backgroundColor: 'white',
+  },
+  back: {
+    transform: [{ rotateY: '180deg' }],
+  },
+  cardContainer: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20
+  }
 });
+
+{/* <View style={styles.cardContainer}>
+      <Text style={[styles.text ]}>
+        {words[cardNumber]?.portuguese ?? wordsOffline[cardNumber].portuguese}
+      </Text>
+      </View>
+
+      <View style={styles.cardContainer}>
+      <Text style={[ styles.text ]}>
+        {words[cardNumber]?.english ?? wordsOffline[cardNumber].english}
+      </Text>
+      </View> */}
